@@ -1,4 +1,4 @@
-package com.example.superuselessbot.botapi.handlers;
+package com.example.superuselessbot.botapi.handlers.unsub;
 
 import com.example.superuselessbot.botapi.BotState;
 import com.example.superuselessbot.botapi.InputMessageHandler;
@@ -11,11 +11,11 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 @Slf4j
 @Component
-public class HelpHandler implements InputMessageHandler {
+public class UnsubscriptionHandler implements InputMessageHandler {
     private final UserDataCache userDataCache;
     private final ReplyMessagesService messagesService;
 
-    public HelpHandler(UserDataCache userDataCache, ReplyMessagesService messagesService) {
+    public UnsubscriptionHandler(UserDataCache userDataCache, ReplyMessagesService messagesService) {
         this.userDataCache = userDataCache;
         this.messagesService = messagesService;
     }
@@ -27,18 +27,17 @@ public class HelpHandler implements InputMessageHandler {
 
     @Override
     public BotState getHandlerName() {
-        return BotState.HELP;
+        return BotState.UNSUBSCRIBE;
     }
 
     private SendMessage processUsersInput(Message inputMsg) {
         int userId = inputMsg.getFrom().getId();
         long chatId = inputMsg.getChatId();
 
-        userDataCache.setUsersCurrentBotState(userId,BotState.MENU);
-        return messagesService.getReplyMessage(chatId,"help:\n" +
-                "cryptocurrency – запрос стоимости криптовалюты\n" +
-                "subscribe – подписка на рассылку о стоимости криптовалюты\n" +
-                "unsubscribe – отписка от рассылки о стоимости криптовалюты\n" +
-                "luxurySubscribe – подписка на рассылку об изменении стоимости криптовалюты на заданный процент");
+        SendMessage replyToUser = messagesService.getReplyMessage(chatId,"Введите название" +
+                " криптовалюты от которой хотите отписаться. Ваши подписки: заглушка");
+        userDataCache.setUsersCurrentBotState(userId,BotState.EXPECT_CRYPTO_UNSUB);
+
+        return replyToUser;
     }
 }

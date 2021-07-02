@@ -1,4 +1,4 @@
-package com.example.superuselessbot.botapi.handlers;
+package com.example.superuselessbot.botapi.handlers.luxsub;
 
 import com.example.superuselessbot.botapi.BotState;
 import com.example.superuselessbot.botapi.InputMessageHandler;

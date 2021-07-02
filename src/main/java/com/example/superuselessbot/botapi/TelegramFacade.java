@@ -1,5 +1,6 @@
 package com.example.superuselessbot.botapi;
 
+import com.example.superuselessbot.api.Api;
 import com.example.superuselessbot.cache.UserDataCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,13 @@ public class TelegramFacade {
 
     public BotApiMethod<?> handleUpdate(Update update) throws IOException, URISyntaxException {
         SendMessage replyMessage = null;
+
+        if (update.hasCallbackQuery()) {
+            CallbackQuery callbackQuery = update.getCallbackQuery();
+            log.info("New callbackQuery from User: {}, userId: {}, with data: {}", update.getCallbackQuery().getFrom().getUserName(),
+                    callbackQuery.getFrom().getId(), update.getCallbackQuery().getData());
+            return processCallbackQuery(callbackQuery);
+        }
 
         Message message = update.getMessage();
         if (message != null && message.hasText()) {
@@ -62,6 +70,9 @@ public class TelegramFacade {
             case "unsubscribe":
                 botState = BotState.UNSUBSCRIBE;
                 break;
+            case "cryptocurrency":
+                botState = BotState.CRYPTOCURRENCY;
+                break;
             default:
                 botState = userDataCache.getUsersCurrentBotState(userId);
                 break;
@@ -71,5 +82,25 @@ public class TelegramFacade {
         replyMessage = botStateContext.processInputMessage(botState, message);
 
         return replyMessage;
+    }
+    private BotApiMethod<?> processCallbackQuery(CallbackQuery buttonQuery) {
+        final long chatId = buttonQuery.getMessage().getChatId();
+        final int userId = buttonQuery.getFrom().getId();
+        BotApiMethod<?> callBackAnswer = null;
+
+        if (userDataCache.getUsersCurrentBotState(userId)==BotState.FIND_PRICE){
+            try {
+                callBackAnswer =new SendMessage(chatId, Api.getCrypto(buttonQuery.getData()));
+                userDataCache.setUsersCurrentBotState(userId,BotState.FIND_PRICE);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        if (userDataCache.getUsersCurrentBotState(userId)==BotState.EXPECT_CRYPTO_SUB){
+            callBackAnswer = new SendMessage(chatId,"Тоже заглушка");
+        }
+
+        return callBackAnswer;
     }
 }

@@ -19,7 +19,7 @@ public class MainMenuService {
         return mainMenuMessage;
     }
 
-    private ReplyKeyboardMarkup getMainMenuKeyboard() {
+    public ReplyKeyboardMarkup getMainMenuKeyboard() {
 
         final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         replyKeyboardMarkup.setSelective(true);
@@ -32,6 +32,7 @@ public class MainMenuService {
         KeyboardRow row2 = new KeyboardRow();
         KeyboardRow row3 = new KeyboardRow();
         KeyboardRow row4 = new KeyboardRow();
+        row1.add(new KeyboardButton("cryptocurrency"));
         row1.add(new KeyboardButton("subscribe"));
         row1.add(new KeyboardButton("luxurySubscribe"));
         row2.add(new KeyboardButton("unsubscribe"));

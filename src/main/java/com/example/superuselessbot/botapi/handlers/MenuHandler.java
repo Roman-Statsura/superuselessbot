@@ -12,12 +12,12 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 @Slf4j
 @Component
-public class DontUnderstandHandler implements InputMessageHandler {
+public class MenuHandler implements InputMessageHandler {
     private final UserDataCache userDataCache;
     private final ReplyMessagesService messagesService;
     private final MainMenuService mainMenuService;
 
-    public DontUnderstandHandler(UserDataCache userDataCache, ReplyMessagesService messagesService, MainMenuService mainMenuService) {
+    public MenuHandler(UserDataCache userDataCache, ReplyMessagesService messagesService, MainMenuService mainMenuService) {
         this.userDataCache = userDataCache;
         this.messagesService = messagesService;
         this.mainMenuService = mainMenuService;
@@ -30,7 +30,7 @@ public class DontUnderstandHandler implements InputMessageHandler {
 
     @Override
     public BotState getHandlerName() {
-        return BotState.DONT_UNDERSTAND;
+        return BotState.MENU;
     }
     private SendMessage processUsersInput(Message inputMsg) {
         int userId = inputMsg.getFrom().getId();

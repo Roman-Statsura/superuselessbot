@@ -1,7 +1,8 @@
-package com.example.superuselessbot.botapi.handlers;
+package com.example.superuselessbot.botapi.handlers.sub;
 
 import com.example.superuselessbot.botapi.BotState;
 import com.example.superuselessbot.botapi.InputMessageHandler;
+import com.example.superuselessbot.buttons.CryptoButtons;
 import com.example.superuselessbot.cache.UserDataCache;
 import com.example.superuselessbot.service.ReplyMessagesService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,13 +12,15 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 @Slf4j
 @Component
-public class HelpHandler implements InputMessageHandler {
+public class SubscriptionHandler implements InputMessageHandler {
     private final UserDataCache userDataCache;
     private final ReplyMessagesService messagesService;
+    private final CryptoButtons cryptoButtons;
 
-    public HelpHandler(UserDataCache userDataCache, ReplyMessagesService messagesService) {
+    public SubscriptionHandler(UserDataCache userDataCache, ReplyMessagesService messagesService, CryptoButtons cryptoButtons) {
         this.userDataCache = userDataCache;
         this.messagesService = messagesService;
+        this.cryptoButtons = cryptoButtons;
     }
 
     @Override
@@ -27,18 +30,18 @@ public class HelpHandler implements InputMessageHandler {
 
     @Override
     public BotState getHandlerName() {
-        return BotState.HELP;
+        return BotState.SUBSCRIPTION;
     }
 
     private SendMessage processUsersInput(Message inputMsg) {
         int userId = inputMsg.getFrom().getId();
         long chatId = inputMsg.getChatId();
 
-        userDataCache.setUsersCurrentBotState(userId,BotState.MENU);
-        return messagesService.getReplyMessage(chatId,"help:\n" +
-                "cryptocurrency – запрос стоимости криптовалюты\n" +
-                "subscribe – подписка на рассылку о стоимости криптовалюты\n" +
-                "unsubscribe – отписка от рассылки о стоимости криптовалюты\n" +
-                "luxurySubscribe – подписка на рассылку об изменении стоимости криптовалюты на заданный процент");
+        SendMessage replyToUser = messagesService.getReplyMessage(chatId,"Введите название" +
+                " криптовалюты(ее аббревиатуру) или выберите из популярных");
+        replyToUser.setReplyMarkup(cryptoButtons.getInlineMessageButtons());
+        userDataCache.setUsersCurrentBotState(userId,BotState.EXPECT_CRYPTO_SUB);
+
+        return replyToUser;
     }
 }

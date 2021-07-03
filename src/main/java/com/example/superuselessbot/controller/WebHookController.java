@@ -1,6 +1,7 @@
 package com.example.superuselessbot.controller;
 
 import com.example.superuselessbot.MyBot;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,5 +19,9 @@ public class WebHookController {
     @PostMapping(value = "/")
     public BotApiMethod<?> onUpdateReceived(@RequestBody Update update){
         return myBot.onWebhookUpdateReceived(update);
+    }
+    @GetMapping(value = "/api")
+    public String on(){
+        return "jopa";
     }
 }

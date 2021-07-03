@@ -38,13 +38,13 @@ public class NewHandler implements InputMessageHandler {
 
         SendMessage replyToUser = messagesService.getReplyMessage(chatId,"Доброго времени суток, "
                 + inputMsg.getFrom().getFirstName() + "! "+
-                "Я - чат-бот Cryptoinformer Вася.  С удовольствием  помогу вам отслеживать курс 6 наиболее популярных" +
+                "Я - чат-бот Cryptoinformer Хомяк Знает.  С удовольствием  помогу вам отслеживать курс 6 наиболее популярных" +
                 " криптовалют: BTC (Биткойн), ETH (Эфириум), BNB (Binance Coin), DOGE (Dogecoin), DOT (Polkadot), " +
                 "ADA (Cardano). Я могу:\n" +
                 "- сообщить стоимость криптовалюты – нажмите cryptocurrency\n" +
-                "- подписать вас на рассылку о стоимости криптовалюты – нажмите subscribe\n" +
+                "- подписать вас на рассылку об изменении стоимости криптовалюты – нажмите subscribe\n" +
                 "- отписать вас от рассылки о стоимости криптовалюты – нажмите unsubscribe\n" +
-                "- подписать вас на рассылку об изменении стоимости криптовалюты на заданный процент – нажмите luxurySubscribe");
+                "- подписать вас на уведомление об изменении стоимости криптовалюты на заданный процент – нажмите luxurySubscribe");
         userDataCache.setUsersCurrentBotState(userId,BotState.MENU);
 
         replyToUser.setReplyMarkup(mainMenuService.getMainMenuKeyboard());

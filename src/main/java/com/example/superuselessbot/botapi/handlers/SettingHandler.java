@@ -29,6 +29,7 @@ public class SettingHandler implements InputMessageHandler {
     public BotState getHandlerName() {
         return BotState.SETTING;
     }
+
     private SendMessage processUsersInput(Message inputMsg) {
         int userId = inputMsg.getFrom().getId();
         long chatId = inputMsg.getChatId();

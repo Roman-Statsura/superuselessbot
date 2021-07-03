@@ -37,8 +37,8 @@ public class SubscriptionHandler implements InputMessageHandler {
         int userId = inputMsg.getFrom().getId();
         long chatId = inputMsg.getChatId();
 
-        SendMessage replyToUser = messagesService.getReplyMessage(chatId,"Введите название" +
-                " криптовалюты(ее аббревиатуру) или выберите из популярных");
+        SendMessage replyToUser = messagesService.getReplyMessage(chatId,"Выберите название криптовалюты, " +
+                "на рассылку о стоимости которой вы хотите подписаться: ");
         replyToUser.setReplyMarkup(cryptoButtons.getInlineMessageButtons());
         userDataCache.setUsersCurrentBotState(userId,BotState.EXPECT_CRYPTO_SUB);
 

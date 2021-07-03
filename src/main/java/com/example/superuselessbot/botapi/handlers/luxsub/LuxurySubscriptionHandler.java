@@ -34,6 +34,8 @@ public class LuxurySubscriptionHandler implements InputMessageHandler {
         int userId = inputMsg.getFrom().getId();
         long chatId = inputMsg.getChatId();
 
-        return messagesService.getReplyMessage(chatId,"Заглушка");
+        return messagesService.getReplyMessage(chatId," Выберите название криптовалюты, " +
+                "на изменение стоимости которой вы хотите подписаться. " +
+                "Данная подписка будет действовать не более одной недели");
     }
 }

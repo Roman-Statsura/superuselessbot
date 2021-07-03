@@ -2,6 +2,7 @@ package com.example.superuselessbot.botapi.handlers.unsub;
 
 import com.example.superuselessbot.botapi.BotState;
 import com.example.superuselessbot.botapi.InputMessageHandler;
+import com.example.superuselessbot.buttons.CryptoButtons;
 import com.example.superuselessbot.cache.UserDataCache;
 import com.example.superuselessbot.service.ReplyMessagesService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,10 +15,12 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 public class UnsubscriptionHandler implements InputMessageHandler {
     private final UserDataCache userDataCache;
     private final ReplyMessagesService messagesService;
+    private final CryptoButtons cryptoButtons;
 
-    public UnsubscriptionHandler(UserDataCache userDataCache, ReplyMessagesService messagesService) {
+    public UnsubscriptionHandler(UserDataCache userDataCache, ReplyMessagesService messagesService, CryptoButtons cryptoButtons) {
         this.userDataCache = userDataCache;
         this.messagesService = messagesService;
+        this.cryptoButtons = cryptoButtons;
     }
 
     @Override
@@ -34,10 +37,20 @@ public class UnsubscriptionHandler implements InputMessageHandler {
         int userId = inputMsg.getFrom().getId();
         long chatId = inputMsg.getChatId();
 
-        SendMessage replyToUser = messagesService.getReplyMessage(chatId,"Введите название" +
-                " криптовалюты от которой хотите отписаться. Ваши подписки: заглушка");
-        userDataCache.setUsersCurrentBotState(userId,BotState.EXPECT_CRYPTO_UNSUB);
+        var subSet = userDataCache.getSubByUser(userId);
+        SendMessage replyToUser;
+        if (userDataCache.isUserANew(userId) || userDataCache.getSubByUser(userId).isEmpty()){
+            userDataCache.setUsersCurrentBotState(userId,BotState.MENU);
+            return messagesService.getReplyMessage(chatId,"У вас нет активных подписок.");
+        }
+        else {
+            var s = String.join(",", subSet);
+            replyToUser = messagesService.getReplyMessage(chatId, "Выберите название криптовалюты, " +
+                    "от рассылки на стоимость которой хотите отписаться. Вы подписаны на: " + s);
+            userDataCache.setUsersCurrentBotState(userId, BotState.EXPECT_CRYPTO_UNSUB);
+            replyToUser.setReplyMarkup(cryptoButtons.getInlineMessageButtonsOptional(subSet));
 
-        return replyToUser;
+            return replyToUser;
+        }
     }
 }

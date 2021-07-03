@@ -34,6 +34,7 @@ public class SettingHandler implements InputMessageHandler {
         int userId = inputMsg.getFrom().getId();
         long chatId = inputMsg.getChatId();
 
-        return messagesService.getReplyMessage(chatId,"Я нежный цветочек, не трогайте меня(");
+        userDataCache.setUsersCurrentBotState(userId,BotState.MENU);
+        return messagesService.getReplyMessage(chatId,"Пока нечего настраивать(");
     }
 }

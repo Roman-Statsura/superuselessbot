@@ -98,7 +98,19 @@ public class TelegramFacade {
             }
         }
         if (userDataCache.getUsersCurrentBotState(userId)==BotState.EXPECT_CRYPTO_SUB){
-            callBackAnswer = new SendMessage(chatId,"Тоже заглушка");
+            userDataCache.addUserSub(userId, buttonQuery.getData());
+            callBackAnswer = new SendMessage(chatId,"Вы успешно подписаны на рассылку о стоимости "+
+                    buttonQuery.getData()+ " !");
+        }
+        if (userDataCache.getUsersCurrentBotState(userId)==BotState.EXPECT_CRYPTO_UNSUB) {
+            if (buttonQuery.getData().equals("Unsub")){
+                userDataCache.deleteAllSubs(userId);
+                userDataCache.setUsersCurrentBotState(userId,BotState.MENU);
+                callBackAnswer = new SendMessage(chatId,"Вы успешно отписаны от всех рассылок!");
+            }else {
+                userDataCache.deleteUserSub(userId, buttonQuery.getData());
+                callBackAnswer = new SendMessage(chatId,"Вы успешно отписаны от "+buttonQuery.getData()+" !");
+            }
         }
 
         return callBackAnswer;
